@@ -1,4 +1,4 @@
-# Sequelize-Auto
+# Sequelize-build
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/sequelize/sequelize-auto.svg)](https://greenkeeper.io/)
 
@@ -8,11 +8,11 @@ Automatically generate models for [SequelizeJS](https://github.com/sequelize/seq
 
 ## Install
 
-    npm install -g sequelize-auto
+    npm install -g sequelize-build
 
 ## Prerequisites
 
-You will need to install the correct dialect binding globally before using sequelize-auto.
+You will need to install the correct dialect binding globally before using sequelize-build.
 
 Example for MySQL/MariaDB
 
@@ -125,7 +125,7 @@ For the `-c, --config` option the following JSON/configuration parameters are de
 ## Programmatic API
 
 ```js
-var SequelizeAuto = require('sequelize-auto')
+var SequelizeAuto = require('sequelize-build')
 var auto = new SequelizeAuto('database', 'user', 'pass');
 
 auto.run(function (err) {
@@ -148,6 +148,85 @@ var auto = new SequelizeAuto('database', 'user', 'pass', {
     tables: ['table1', 'table2', 'table3']
     //...
 })
+
+width template:
+
+'use strict'
+
+const path = require('path')
+const SequelizeAuto = require('sequelize-build')
+
+const modelsDir = path.join(__dirname, './models')
+
+const auto = new SequelizeAuto('database', 'user', 'pass', {
+  host: 'localhost',
+  port: 3306,
+  dialect: 'mysql',
+  template: {
+    base: {
+      directory: modelsDir+'/base',
+      templatePath:  path.join(__dirname, 'base_model.js')
+    },
+    model:{
+      use:true,
+      directory: modelsDir,
+      templatePath:  path.join(__dirname, 'model.js')
+    }
+  },
+  directory: modelsDir,
+  omitNull: true,
+  // 指定生成的 models 文件的缩进格式以匹配 ESlint 规则
+  spaces: true,  // 使用空格缩进
+  indentation: 4,  // 使用 4 空格缩进
+  additional: {
+    timestamps: true,
+    createdAt: '"created_at"',
+    updatedAt: '"updated_at"',
+    deletedAt: '"deleted_at"',
+    paranoid: true
+  }
+})
+
+console.log('> syncing models...')
+auto.run(err => {
+  if (err) {
+    console.error(err)
+  } else {
+    console.log('> done.')
+  }
+})
+
+
+```
+
+## Template engine
+
+* template engine use handlebars more see [handlebars](http://handlebarsjs.com/)
+
+Example
+
+  base_model.js
+
+```js
+module.exports = `/* jshint indent: 4 */
+module.exports = function(app) {
+    const DataTypes = app.Sequelize
+    return {{{fields}}}
+}`
+```
+
+ model.js
+
+```js
+module.exports = `/* jshint indent: 4 */
+const columns = require('./base/{{tableName}}')
+module.exports = app => {
+  return app.model.define('{{tableName}}',columns(app), {
+    tableName: '{{tableName}}',
+    timestamps: true,
+    paranoid: true
+  })
+}`
 ```
 
 ## Testing
