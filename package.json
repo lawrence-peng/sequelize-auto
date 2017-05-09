@@ -1,6 +1,6 @@
 {
-  "name": "sequelize-auto",
-  "version": "0.4.28",
+  "name": "sequelize-build",
+  "version": "0.0.1",
   "description": "Automatically generate bare sequelize models from your database.",
   "main": "index",
   "keywords": [
@@ -15,10 +15,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sequelize/sequelize-auto.git"
+    "url": "https://github.com/lawrence-peng/sequelize-auto.git"
   },
   "bugs": {
-    "url": "https://github.com/sequelize/sequelize-auto/issues"
+    "url": "https://github.com/lawrence-peng/sequelize-auto/issues"
   },
   "nyc": {
     "exclude": [
@@ -45,11 +45,12 @@
   "engines": {
     "node": ">=0.10"
   },
-  "author": "Daniel Durante <me@danieldurante.com>",
+  "author": "lawrence",
   "license": "MIT",
   "dependencies": {
     "async": "^2.1.5",
     "graceful-fs-extra": "^2.0.0",
+    "handlebars": "^4.0.8",
     "mkdirp": "^0.5.1",
     "sequelize": "^3.30.2",
     "yargs": "^8.0.1"
